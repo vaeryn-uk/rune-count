@@ -147,8 +147,12 @@ public class RuneCountPlugin extends Plugin
 			}
 
 			String amount = infiniteRunes.contains(rune) ? "∞" : Integer.toString(quantity);
-			String source = infiniteRunes.contains(rune) ? "Equipped staff (unlimited)" : "Inventory and rune pouch";
-			infoBox.update(amount, rune.getDisplayName() + " rune: " + amount + " (" + source + ")");
+			String tooltip = rune.getDisplayName() + " rune: " + amount;
+			if (infiniteRunes.contains(rune))
+			{
+				tooltip += " (equipped staff)";
+			}
+			infoBox.update(amount, tooltip);
 		}
 	}
 
