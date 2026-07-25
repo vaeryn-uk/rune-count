@@ -130,7 +130,8 @@ public class RuneCountPlugin extends Plugin
 		{
 			int quantity = quantities.get(rune);
 			boolean isInfinite = infiniteRunes.contains(rune);
-			boolean isLow = lowRuneThreshold > 0 && quantity > 0 && quantity <= lowRuneThreshold;
+			boolean isLow = !isInfinite && lowRuneThreshold > 0
+				&& quantity > 0 && quantity <= lowRuneThreshold;
 			boolean visible = lowRuneThreshold > 0 ? isLow : quantity > 0 || isInfinite;
 			RuneCountInfoBox infoBox = infoBoxes.get(rune);
 			if (!visible)
