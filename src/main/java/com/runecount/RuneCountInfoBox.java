@@ -8,15 +8,17 @@ import net.runelite.client.ui.overlay.infobox.InfoBox;
 final class RuneCountInfoBox extends InfoBox
 {
 	private String text = "0";
+	private Color textColor = Color.WHITE;
 
 	RuneCountInfoBox(BufferedImage image, Plugin plugin)
 	{
 		super(image, plugin);
 	}
 
-	void update(String text, String tooltip)
+	void update(String text, String tooltip, Color textColor)
 	{
 		this.text = text;
+		this.textColor = textColor;
 		setTooltip(tooltip);
 	}
 
@@ -29,6 +31,6 @@ final class RuneCountInfoBox extends InfoBox
 	@Override
 	public Color getTextColor()
 	{
-		return Color.WHITE;
+		return textColor;
 	}
 }

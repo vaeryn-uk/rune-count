@@ -1,6 +1,7 @@
 package com.runecount;
 
 import com.google.inject.Provides;
+import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.util.EnumMap;
 import java.util.EnumSet;
@@ -108,7 +109,7 @@ public class RuneCountPlugin extends Plugin
 	@Subscribe
 	public void onConfigChanged(ConfigChanged event)
 	{
-		if ("runecount".equals(event.getGroup()) && "showEmpty".equals(event.getKey()))
+		if ("runecount".equals(event.getGroup()))
 		{
 			requestRefresh();
 		}
@@ -123,11 +124,14 @@ public class RuneCountPlugin extends Plugin
 	{
 		Map<RuneType, Integer> quantities = getRuneQuantities();
 		EnumSet<RuneType> infiniteRunes = getInfiniteRunes();
+		int lowRuneThreshold = config.lowRuneDisplayThreshold();
 
 		for (RuneType rune : RuneType.values())
 		{
 			int quantity = quantities.get(rune);
-			boolean visible = config.showEmpty() || quantity > 0 || infiniteRunes.contains(rune);
+			boolean isInfinite = infiniteRunes.contains(rune);
+			boolean isLow = lowRuneThreshold > 0 && quantity > 0 && quantity <= lowRuneThreshold;
+			boolean visible = lowRuneThreshold > 0 ? isLow : quantity > 0 || isInfinite;
 			RuneCountInfoBox infoBox = infoBoxes.get(rune);
 			if (!visible)
 			{
@@ -147,8 +151,9 @@ public class RuneCountPlugin extends Plugin
 				infoBoxManager.addInfoBox(infoBox);
 			}
 
-			String amount = infiniteRunes.contains(rune) ? "∞" : Integer.toString(quantity);
-			infoBox.update(amount, rune.getDisplayName() + " rune: " + amount);
+			String amount = isInfinite ? "∞" : Integer.toString(quantity);
+			infoBox.update(amount, rune.getDisplayName() + " rune: " + amount,
+				isLow ? Color.RED : Color.WHITE);
 		}
 	}
 
