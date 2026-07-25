@@ -1,0 +1,24 @@
+# Gradle build state and generated output
+.gradle/
+build/
+out/
+
+# Locally downloaded build tools
+.tools/
+
+# IDE and editor metadata
+.idea/
+*.iml
+.classpath
+.project
+.settings/
+.vscode/
+
+# RuneLite development credentials and local configuration
+.runelite/
+credentials.properties
+
+# OS files and logs
+.DS_Store
+Thumbs.db
+*.log
