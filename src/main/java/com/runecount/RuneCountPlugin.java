@@ -12,6 +12,7 @@ import net.runelite.api.InventoryID;
 import net.runelite.api.Item;
 import net.runelite.api.ItemComposition;
 import net.runelite.api.ItemContainer;
+import net.runelite.api.ItemID;
 import net.runelite.api.Varbits;
 import net.runelite.api.events.GameTick;
 import net.runelite.api.events.GameStateChanged;
@@ -147,12 +148,7 @@ public class RuneCountPlugin extends Plugin
 			}
 
 			String amount = infiniteRunes.contains(rune) ? "∞" : Integer.toString(quantity);
-			String tooltip = rune.getDisplayName() + " rune: " + amount;
-			if (infiniteRunes.contains(rune))
-			{
-				tooltip += " (equipped staff)";
-			}
-			infoBox.update(amount, tooltip);
+			infoBox.update(amount, rune.getDisplayName() + " rune: " + amount);
 		}
 	}
 
@@ -206,12 +202,18 @@ public class RuneCountPlugin extends Plugin
 	{
 		EnumSet<RuneType> supplied = EnumSet.noneOf(RuneType.class);
 		ItemContainer equipment = client.getItemContainer(InventoryID.EQUIPMENT);
-		if (equipment == null || equipment.getItems().length <= 3)
+		if (equipment == null)
+		{
+			return supplied;
+		}
+		Item[] equipmentItems = equipment.getItems();
+		addTomeRunes(supplied, equipmentItems);
+		if (equipmentItems.length <= 3)
 		{
 			return supplied;
 		}
 
-		Item weapon = equipment.getItems()[3];
+		Item weapon = equipmentItems[3];
 		ItemComposition composition = itemManager.getItemComposition(weapon.getId());
 		if (composition == null)
 		{
@@ -232,6 +234,25 @@ public class RuneCountPlugin extends Plugin
 			addStaffRunes(supplied, name);
 		}
 		return supplied;
+	}
+
+	private static void addTomeRunes(EnumSet<RuneType> supplied, Item[] equipment)
+	{
+		// The shield slot is index 5. Empty tomes have separate item IDs and
+		// deliberately do not provide unlimited runes.
+		if (equipment.length <= 5)
+		{
+			return;
+		}
+		int offhandId = equipment[5].getId();
+		if (offhandId == ItemID.TOME_OF_FIRE || offhandId == ItemID.TOME_OF_FIRE_27358)
+		{
+			supplied.add(RuneType.FIRE);
+		}
+		if (offhandId == ItemID.TOME_OF_WATER)
+		{
+			supplied.add(RuneType.WATER);
+		}
 	}
 
 	private static void addStaffRunes(EnumSet<RuneType> supplied, String name)
