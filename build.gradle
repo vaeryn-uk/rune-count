@@ -9,7 +9,7 @@ repositories {
 }
 
 def runeLiteVersion = 'latest.release'
-def pluginMainClass = 'com.runecount.RuneCountPluginTest'
+def pluginMainClass = 'com.runecount.RuneCountDevLauncher'
 
 dependencies {
     compileOnly group: 'net.runelite', name: 'client', version: runeLiteVersion
